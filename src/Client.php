@@ -3,7 +3,6 @@
 namespace Edofre\BolCom;
 
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\ClientException;
 
 /**
  * Class Client
@@ -16,9 +15,9 @@ class Client
     /** @var string API version, used in requests */
     const API_VERSION = 'v4';
 
-    /** Endpoints */
+    /** @var string */
     const ENDPOINT_CATEGORY_UTILITIES = 'utils';
-
+    /** @var string */
     const ENDPOINT_PING = 'ping';
 
     /** @var \GuzzleHttp\Client */
@@ -39,33 +38,27 @@ class Client
             'base_uri' => self::API_URL,
         ], $config));
 
+        // TODO, some checking for a valid key
+
         $this->options['query']['apikey'] = $apikey;
     }
 
     /**
-     * @param array $options
+     * @return mixed
      */
     public function ping()
     {
-        try {
-            $response = $this->client->get(
-                $this->getFullEndpoint(self::ENDPOINT_CATEGORY_UTILITIES, self::ENDPOINT_PING),
-                ['query' => $this->options['query']]
-            );
-            var_dump($response);
-
-        } catch (ClientException $clientException) {
-            var_dump($clientException->getMessage());
-            var_dump($clientException);
-            exit;
-        }
-
-
+        $response = $this->client->get(
+            $this->getFullEndpoint(self::ENDPOINT_CATEGORY_UTILITIES, self::ENDPOINT_PING),
+            ['query' => $this->options['query']]
+        );
+        return json_decode($response->getBody(), true);
     }
 
     /**
-     * @param $category
-     * @param $endpoint
+     * @param        $category
+     * @param        $endpoint
+     * @param string $version
      * @return string
      */
     private function getFullEndpoint($category, $endpoint, $version = self::API_VERSION)
