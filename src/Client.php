@@ -27,7 +27,7 @@ class Client
 
     /** @var array */
     private $options = [
-        'query' => ['apikey' => ''],
+        'apikey' => '',
     ];
 
     /**
@@ -42,7 +42,7 @@ class Client
 
         // TODO, some checking for a valid key
 
-        $this->options['query']['apikey'] = $apikey;
+        $this->options['apikey'] = $apikey;
     }
 
     /**
@@ -57,9 +57,12 @@ class Client
             self::ENDPOINT_PING,
         ]);
 
+        // Build the query options
+        $query = $this->buildQueryOptions();
+
         $response = $this->client->get(
             $url,
-            ['query' => $this->options['query']]
+            $query
         );
         return json_decode($response->getBody(), true);
     }
@@ -75,28 +78,40 @@ class Client
         return implode('/', $items);
     }
 
+    /**
+     * @param array $options
+     * @return array
+     */
+    private function buildQueryOptions(array $options = [])
+    {
+        return ['query' => array_merge($this->options, $options)];
+    }
+
+    /**
+     * @param        $id
+     * @param string $queryParams
+     * @return mixed
+     */
     public function product($id, $queryParams = '')
     {
-
-        //        'action' => string 'getproduct' (length=10)
+        // Build the URL
+        $url = $this->buildUrl([
+            self::ENDPOINT_CATEGORY_CATALOG,
+            self::API_VERSION,
+            self::ENDPOINT_PRODUCTS,
+            $id,
+        ]);
         //  'type' => string 'raw' (length=3)
-        //
-        //        includeattributes = true  and offers = all
+        //  includeattributes = true  and offers = all
 
-        $url = $this->getFullEndpoint(self::ENDPOINT_CATEGORY_CATALOG, self::ENDPOINT_PRODUCTS);
-
-        var_dump($url);
-
-        var_dump($queryParams);
-        exit;
+        $query = ['query' => $this->options['query']];
+        var_dump($query);
 
         $response = $this->client->get(
             $url,
-            ['query' => $this->options['query']]
+            $query
         );
 
-        var_dump($response);
-        exit;
         return json_decode($response->getBody(), true);
 
     }
