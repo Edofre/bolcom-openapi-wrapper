@@ -17,8 +17,10 @@ class Client
 
     /** @var string */
     const ENDPOINT_CATEGORY_UTILITIES = 'utils';
+    const ENDPOINT_CATEGORY_CATALOG = 'catalog';
     /** @var string */
     const ENDPOINT_PING = 'ping';
+    const ENDPOINT_PRODUCTS = 'products';
 
     /** @var \GuzzleHttp\Client */
     private $client;
@@ -48,8 +50,15 @@ class Client
      */
     public function ping()
     {
+        // Build the URL
+        $url = $this->buildUrl([
+            self::ENDPOINT_CATEGORY_UTILITIES,
+            self::API_VERSION,
+            self::ENDPOINT_PING,
+        ]);
+
         $response = $this->client->get(
-            $this->getFullEndpoint(self::ENDPOINT_CATEGORY_UTILITIES, self::ENDPOINT_PING),
+            $url,
             ['query' => $this->options['query']]
         );
         return json_decode($response->getBody(), true);
@@ -61,8 +70,34 @@ class Client
      * @param string $version
      * @return string
      */
-    private function getFullEndpoint($category, $endpoint, $version = self::API_VERSION)
+    private function buildUrl($items)
     {
-        return "/{$category}/{$version}/{$endpoint}";
+        return implode('/', $items);
+    }
+
+    public function product($id, $queryParams = '')
+    {
+
+        //        'action' => string 'getproduct' (length=10)
+        //  'type' => string 'raw' (length=3)
+        //
+        //        includeattributes = true  and offers = all
+
+        $url = $this->getFullEndpoint(self::ENDPOINT_CATEGORY_CATALOG, self::ENDPOINT_PRODUCTS);
+
+        var_dump($url);
+
+        var_dump($queryParams);
+        exit;
+
+        $response = $this->client->get(
+            $url,
+            ['query' => $this->options['query']]
+        );
+
+        var_dump($response);
+        exit;
+        return json_decode($response->getBody(), true);
+
     }
 }
