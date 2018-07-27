@@ -68,9 +68,7 @@ class Client
     }
 
     /**
-     * @param        $category
-     * @param        $endpoint
-     * @param string $version
+     * @param $items
      * @return string
      */
     private function buildUrl($items)
@@ -89,10 +87,10 @@ class Client
 
     /**
      * @param        $id
-     * @param string $queryParams
+     * @param array  $queryParams
      * @return mixed
      */
-    public function product($id, $queryParams = '')
+    public function product($id, $queryParams = [])
     {
         // Build the URL
         $url = $this->buildUrl([
@@ -101,18 +99,17 @@ class Client
             self::ENDPOINT_PRODUCTS,
             $id,
         ]);
-        //  'type' => string 'raw' (length=3)
-        //  includeattributes = true  and offers = all
 
-        $query = ['query' => $this->options['query']];
-        var_dump($query);
+        // Build the query options
+        $query = $this->buildQueryOptions($queryParams);
 
+        // Make the call
         $response = $this->client->get(
             $url,
             $query
         );
 
-        return json_decode($response->getBody(), true);
-
+        // Return the first entry of the products key
+        return json_decode($response->getBody(), true)['products'][0];
     }
 }
