@@ -26,27 +26,38 @@ class Client
     private $client;
 
     /** @var array */
-    private $options = [
+    private $queryOptions = [
         'apikey' => '',
+    ];
+
+    /** @var array Options for offer query parameter */
+    private $offerOptions = [
+        'all',
+        'bestoffer', // Default
+        'cheapest',
+        'secondhand',
+        'newoffers',
+        'bolcom',
     ];
 
     /**
      * Client constructor.
-     * @param array $config
+     * @param string $apiKey
+     * @param array  $config
      */
-    public function __construct($apikey, array $config = [])
+    public function __construct($apiKey, array $config = [])
     {
         $this->client = new GuzzleClient(array_merge([
             'base_uri' => self::API_URL,
         ], $config));
 
-        // TODO, some checking for a valid key
-
-        $this->options['apikey'] = $apikey;
+        // TODO, some checking for a valid key?
+        $this->queryOptions['apikey'] = $apiKey;
     }
 
     /**
      * @return mixed
+     * @throws \Exception
      */
     public function ping()
     {
@@ -77,18 +88,30 @@ class Client
     }
 
     /**
-     * @param array $options
+     * @param array $queryOptions
      * @return array
+     * @throws \Exception
      */
-    private function buildQueryOptions(array $options = [])
+    private function buildQueryOptions(array $queryOptions = [])
     {
-        return ['query' => array_merge($this->options, $options)];
+        $mergedOptions = array_merge($this->queryOptions, $queryOptions);
+
+        // Check if offers key correct
+        if (isset($mergedOptions['offers'])) {
+            // Check for validity
+            if (!in_array($mergedOptions['offers'], $this->offerOptions)) {
+                throw new \Exception("Offer option: '{$mergedOptions['offers']}' is not supported.");
+            }
+        }
+
+        return ['query' => $mergedOptions];
     }
 
     /**
      * @param        $id
-     * @param array  $queryParams
+     * @param string $queryParams
      * @return mixed
+     * @throws \Exception
      */
     public function product($id, $queryParams = [])
     {
