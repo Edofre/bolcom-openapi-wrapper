@@ -54,3 +54,24 @@ try {
     var_dump($e);
     exit;
 }
+
+/*
+|--------------------------------------------------------------------------
+| Recommendations
+| 1002004010708531 = inception
+| 123 does not exist
+|--------------------------------------------------------------------------
+*/
+try {
+    $recommendations = $client->recommendations('1002004010708531', [
+        'includeattributes' => true,
+        //        'offers' => 'all',
+        'limit' => 10, // Max is 20
+        'offset' => 0,
+        'country' => 'NL',
+    ]);
+    var_dump($recommendations);
+} catch (Exception $e) {
+    var_dump($e);
+    exit;
+}

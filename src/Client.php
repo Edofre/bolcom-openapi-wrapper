@@ -21,6 +21,10 @@ class Client
     /** @var string */
     const ENDPOINT_PING = 'ping';
     const ENDPOINT_PRODUCTS = 'products';
+    const ENDPOINT_RECOMMENDATIONS = 'recommendations';
+    /** @var string */
+    const COUNTRY_NETHERLANDS = 'NL';
+    const COUNTRY_BELGIUM = 'BE';
 
     /** @var \GuzzleHttp\Client */
     private $client;
@@ -38,6 +42,14 @@ class Client
         'secondhand',
         'newoffers',
         'bolcom',
+    ];
+
+    /**
+     * @var array
+     */
+    private $countryOptions = [
+        self::COUNTRY_NETHERLANDS,
+        self::COUNTRY_BELGIUM,
     ];
 
     /**
@@ -113,7 +125,7 @@ class Client
      * @return mixed
      * @throws \Exception
      */
-    public function product($id, $queryParams = [])
+    public function product($id, array $queryParams = [])
     {
         // Build the URL
         $url = $this->buildUrl([
@@ -134,5 +146,33 @@ class Client
 
         // Return the first entry of the products key
         return json_decode($response->getBody(), true)['products'][0];
+    }
+
+    /**
+     * @param       $id
+     * @param array $queryParams
+     * @return mixed
+     * @throws \Exception
+     */
+    public function recommendations($id, array $queryParams = [])
+    {
+        // Build the URL
+        $url = $this->buildUrl([
+            self::ENDPOINT_CATEGORY_CATALOG,
+            self::API_VERSION,
+            self::ENDPOINT_RECOMMENDATIONS,
+            $id,
+        ]);
+
+        // Build the query options
+        $query = $this->buildQueryOptions($queryParams);
+
+        // Make the call
+        $response = $this->client->get(
+            $url,
+            $query
+        );
+
+        return json_decode($response->getBody(), true)['products'];
     }
 }
