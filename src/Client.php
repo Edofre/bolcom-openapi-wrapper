@@ -3,6 +3,7 @@
 namespace Edofre\BolCom;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Class Client
@@ -19,36 +20,56 @@ class Client
     const ENDPOINT_CATEGORY_UTILITIES = 'utils';
 
     const ENDPOINT_PING = 'ping';
+
     /** @var \GuzzleHttp\Client */
     private $client;
 
+    /** @var array */
+    private $options = [
+        'query' => ['apikey' => ''],
+    ];
 
     /**
-     * NsApi constructor.
+     * Client constructor.
      * @param array $config
      */
-    public function __construct(array $config = [])
+    public function __construct($apikey, array $config = [])
     {
         $this->client = new GuzzleClient(array_merge([
             'base_uri' => self::API_URL,
         ], $config));
+
+        $this->options['query']['apikey'] = $apikey;
     }
 
-
-    public function ping(array $options = [])
+    /**
+     * @param array $options
+     */
+    public function ping()
     {
-        $response = $this->client->get($this->getFullEndpoint(self::ENDPOINT_PING), $options);
+        try {
+            $response = $this->client->get(
+                $this->getFullEndpoint(self::ENDPOINT_CATEGORY_UTILITIES, self::ENDPOINT_PING),
+                ['query' => $this->options['query']]
+            );
+            var_dump($response);
 
-        var_dump($response);
-        exit;
+        } catch (ClientException $clientException) {
+            var_dump($clientException->getMessage());
+            var_dump($clientException);
+            exit;
+        }
+
+
     }
 
-    private function getFullEndpoint($category, $endpoint)
+    /**
+     * @param $category
+     * @param $endpoint
+     * @return string
+     */
+    private function getFullEndpoint($category, $endpoint, $version = self::API_VERSION)
     {
-        var_dump($category);
-        var_dump($endpoint);
-        exit;
-
+        return "/{$category}/{$version}/{$endpoint}";
     }
-
 }
