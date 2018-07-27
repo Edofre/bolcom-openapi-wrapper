@@ -21,12 +21,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Edofre\\Fullcalendar\\": "src"
+      "Edofre\\BolCom\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Edofre\\Fullcalendar\\Test\\": "tests"
+      "Edofre\\BolCom\\Test\\": "tests"
     }
   },
   "require-dev": {
