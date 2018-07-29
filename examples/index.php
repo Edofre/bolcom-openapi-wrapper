@@ -93,3 +93,21 @@ try {
     var_dump($e);
     exit;
 }
+
+/*
+|--------------------------------------------------------------------------
+| Offers
+| 1002004010708531 = inception
+|--------------------------------------------------------------------------
+*/
+try {
+    $offers = $client->offers('1002004010708531', [
+        // 'offers' => 'all,cheapest,secondhand,newoffers,bolcom',
+        'offers'  => 'cheapest', // Default
+        'country' => 'NL',
+    ]);
+    var_dump($offers);
+} catch (Exception $e) {
+    var_dump($e);
+    exit;
+}
