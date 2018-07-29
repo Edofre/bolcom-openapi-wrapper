@@ -75,3 +75,21 @@ try {
     var_dump($e);
     exit;
 }
+
+/*
+|--------------------------------------------------------------------------
+| Related Products
+| 1002004010708531 = inception
+| 123 does not exist
+|--------------------------------------------------------------------------
+*/
+try {
+    $relatedProducts = $client->relatedProducts('1002004010708531', [
+        'dataset' => 'productfamily,accessories',
+        'country' => 'NL',
+    ]);
+    var_dump($relatedProducts);
+} catch (Exception $e) {
+    var_dump($e);
+    exit;
+}

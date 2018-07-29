@@ -22,6 +22,7 @@ class Client
     const ENDPOINT_PING = 'ping';
     const ENDPOINT_PRODUCTS = 'products';
     const ENDPOINT_RECOMMENDATIONS = 'recommendations';
+    const ENDPOINT_RELATED_PRODUCTS = 'relatedproducts';
     /** @var string */
     const COUNTRY_NETHERLANDS = 'NL';
     const COUNTRY_BELGIUM = 'BE';
@@ -174,5 +175,33 @@ class Client
         );
 
         return json_decode($response->getBody(), true)['products'];
+    }
+
+    /**
+     * @param       $id
+     * @param array $queryParams
+     * @return mixed
+     * @throws \Exception
+     */
+    public function relatedProducts($id, array $queryParams = [])
+    {
+        // Build the URL
+        $url = $this->buildUrl([
+            self::ENDPOINT_CATEGORY_CATALOG,
+            self::API_VERSION,
+            self::ENDPOINT_RELATED_PRODUCTS,
+            $id,
+        ]);
+
+        // Build the query options
+        $query = $this->buildQueryOptions($queryParams);
+
+        // Make the call
+        $response = $this->client->get(
+            $url,
+            $query
+        );
+
+        return json_decode($response->getBody(), true);
     }
 }
