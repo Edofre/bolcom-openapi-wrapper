@@ -53,4 +53,26 @@ class ClientTest extends TestCase
         $this->assertArrayHasKey('ean', $response);
         $this->assertEquals($response['ean'], '0045496422165');
     }
+
+    /** @test */
+    public function getNonExistingProduct()
+    {
+        // Prepare some variables
+        $productId = 'THISIDDOESNOTEXIST';
+        $apiKey = getenv('API_KEY');
+
+        try {
+            $response = $this->client->product($productId);
+            $this->fail('We should throw an exception, not get a proper response...');
+        } catch (\GuzzleHttp\Exception\ClientException $clientException) {
+            $code = $clientException->getCode();
+            $this->assertEquals('400', $code);
+
+            $message = $clientException->getMessage();
+            $this->assertEquals("Client error: `GET https://api.bol.com/catalog/v4/products/THISIDDOESNOTEXIST?apikey={$apiKey}` resulted in a `400 Bad Request` response:
+{\"code\":\"InvalidProductIds\",\"message\":\"Invalid product id(s)\"}
+", $message);
+        }
+
+    }
 }
