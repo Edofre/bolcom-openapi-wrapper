@@ -123,7 +123,7 @@ class Client
 
     /**
      * @param        $id
-     * @param string $queryParams
+     * @param array  $queryParams
      * @return mixed
      * @throws \Exception
      */
