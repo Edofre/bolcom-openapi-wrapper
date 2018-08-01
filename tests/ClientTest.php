@@ -55,6 +55,18 @@ class ClientTest extends TestCase
     }
 
     /** @test */
+    public function getProductResponse()
+    {
+        $productId = '9200000091193302';
+        $response = $this->client->product($productId);
+
+        $product = new \Edofre\BolCom\Responses\Product($response);
+
+        $this->assertEquals('9200000091193302', $product->getId());
+        $this->assertEquals("Octopath Traveler - Switch", $product->getTitle());
+    }
+
+    /** @test */
     public function getNonExistingProduct()
     {
         // Prepare some variables
