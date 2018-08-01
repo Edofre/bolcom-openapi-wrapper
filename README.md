@@ -14,5 +14,5 @@ $ php composer.phar require edofre/bolcom-openapi-wrapper
 
 Run the tests by executing the following command:
 ```
-composer test
+API_KEY=YOURAPIKEYSHOULDBEHERE phpunit
 ```
