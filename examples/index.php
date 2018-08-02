@@ -32,16 +32,22 @@ try {
 |--------------------------------------------------------------------------
 */
 try {
-    $product = $client->product('1002004010708531', [
+    $productData = $client->product('1002004010708531', [
         'type'              => 'raw',
         'offers'            => 'all',
         'includeattributes' => true,
     ]);
+
+    // Create new product response
+    $product = new Edofre\BolCom\Responses\Product($productData);
+
     var_dump($product);
+
 } catch (Exception $e) {
     var_dump($e);
     exit;
 }
+
 
 try {
     $unknownProduct = $client->product('123', [
