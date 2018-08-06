@@ -254,6 +254,9 @@ class Client
     {
         $queryParams = [];
 
+        if (!empty($type)) {
+            $queryParams['type'] = urlencode($type);
+        }
         if (!empty($q)) {
             $queryParams['q'] = urlencode($q);
         }
@@ -269,8 +272,8 @@ class Client
         if (!empty($limit)) {
             $queryParams['limit'] = urlencode($limit);
         }
-        if (!empty($sortingMethod) && !empty($sortingAscending)) {
-            $queryParams['sort'] = urlencode($sortingMethod);
+        if (!empty($sort) && !empty($sortingAscending)) {
+            $queryParams['sort'] = urlencode($sort);
             $queryParams['sortingAscending'] = (($sortingAscending) ? 'true' : 'false');
         }
         if (!empty($offers)) {
