@@ -117,3 +117,26 @@ try {
     var_dump($e);
     exit;
 }
+
+/*
+|--------------------------------------------------------------------------
+| Lists
+|--------------------------------------------------------------------------
+*/
+try {
+    $response = $client->lists(
+        'toplist_default',
+        null,
+        0,
+        10,
+        'toplist_default',
+        false,
+        true,
+        false,
+        false
+    );
+    var_dump($response);
+} catch (Exception $e) {
+    var_dump($e);
+    exit;
+}
