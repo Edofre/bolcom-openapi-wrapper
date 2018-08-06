@@ -316,7 +316,6 @@ class Client
             $query
         );
 
-
-        return $response;
+        return json_decode($response->getBody(), true);
     }
 }
