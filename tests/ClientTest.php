@@ -85,6 +85,27 @@ class ClientTest extends TestCase
 {\"code\":\"InvalidProductIds\",\"message\":\"Invalid product id(s)\"}
 ", $message);
         }
+    }
 
+    /** @test */
+    public function getListsResponse()
+    {
+        $limit = 12;
+
+        $response = $this->client->lists(
+            'toplist_default',
+            null,
+            0,
+            $limit,
+            'toplist_default',
+            false,
+            true,
+            false,
+            false
+        );
+
+        $this->assertEquals($limit, count($response['products']));
+        $this->assertTrue(isset($response['originalRequest']));
+        $this->assertTrue(isset($response['totalResultSize']));
     }
 }
