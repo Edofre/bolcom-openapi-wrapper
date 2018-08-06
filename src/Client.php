@@ -24,6 +24,7 @@ class Client
     const ENDPOINT_RECOMMENDATIONS = 'recommendations';
     const ENDPOINT_RELATED_PRODUCTS = 'relatedproducts';
     const ENDPOINT_OFFERS = 'offers';
+    const ENDPOINT_LISTS = 'lists';
     /** @var string */
     const COUNTRY_NETHERLANDS = 'NL';
     const COUNTRY_BELGIUM = 'BE';
@@ -232,5 +233,87 @@ class Client
         );
 
         return json_decode($response->getBody(), true);
+    }
+
+    /**
+     * @param        $type
+     * @param        $ids
+     * @param        $offset
+     * @param        $limit
+     * @param        $sort
+     * @param        $sortingAscending
+     * @param        $includeProducts
+     * @param        $includeCategories
+     * @param        $includeRefinements
+     * @param bool   $includeAttributes
+     * @param string $listId
+     * @return mixed
+     * @throws \Exception
+     */
+    public function lists($type, $ids, $offset, $limit, $sort, $sortingAscending, $includeProducts, $includeCategories, $includeRefinements, $includeAttributes = false, $listId = '')
+    {
+        $queryParams = [];
+
+        if (!empty($q)) {
+            $queryParams['q'] = urlencode($q);
+        }
+        if (!empty($ids)) {
+            $queryParams['ids'] = urlencode($ids);
+        }
+        if (!empty($includeAttributes)) {
+            $queryParams['includeattributes'] = urlencode($includeAttributes);
+        }
+        if (!empty($offset)) {
+            $queryParams['offset'] = urlencode($offset);
+        }
+        if (!empty($limit)) {
+            $queryParams['limit'] = urlencode($limit);
+        }
+        if (!empty($sortingMethod) && !empty($sortingAscending)) {
+            $queryParams['sort'] = urlencode($sortingMethod);
+            $queryParams['sortingAscending'] = (($sortingAscending) ? 'true' : 'false');
+        }
+        if (!empty($offers)) {
+            $queryParams['offers'] = urlencode($offers);
+        }
+        if (!empty($searchfield)) {
+            $queryParams['searchfield'] = urlencode($searchfield);
+        }
+        if (!empty($pids)) {
+            $queryParams['pids'] = urlencode($pids);
+        }
+
+        $dataOutput = '';
+        if (!empty($includeProducts)) {
+            $dataOutput .= 'products,';
+        }
+        if (!empty($includeCategories)) {
+            $dataOutput .= 'categories,';
+        }
+        if (!empty($includeRefinements)) {
+            $dataOutput .= 'refinements,';
+        }
+
+        $queryParams['dataoutput'] = $dataOutput;
+
+        // Build the URL
+        $url = $this->buildUrl([
+            self::ENDPOINT_CATEGORY_CATALOG,
+            self::API_VERSION,
+            self::ENDPOINT_LISTS,
+            $ids,
+        ]);
+
+        // Build the query options
+        $query = $this->buildQueryOptions($queryParams);
+
+        // Make the call
+        $response = $this->client->get(
+            $url,
+            $query
+        );
+
+
+        return $response;
     }
 }
